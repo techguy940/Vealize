@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Vealize | Visualise Everything at one place</title>
+	<link rel="stylesheet" type="text/css" href="css/code.css">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://kit.fontawesome.com/0b1453f29b.js" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript" charset="utf-8"></script>
+	<meta property="og:type" content="website">
+    <meta property="og:url" content="https://vealize.my.to/code.html">
+    <meta property="og:title" content="Vealize | Code Execution Visualizer">
+    <meta property="og:description" content="Visualize line-to-line code execution.">
+    <meta property="og:image" content="img/pagecode.png">
+	<meta name="twitter:card" content="summary_large_image">
+	<link rel='icon' href='img/logo.png' type="image/png">
+	
+</head>
+<body>
+	<header class="header">
+		<h1>Vealize</h1>
+		<ul>
+			<li><a class="h active" id="homeNav" href="index.html#">Home</a></li>
+			<li><a class="h" id="aboutNav" href="index.html#choose">About</a></li>
+			<li><a class="h" id="featuresNav"href="index.html#features">Features</a></li>
+			<li><a class="h" id="contactNav" href="index.html#contact">Contact</a></li>
+		</ul>
+	</header>
+	<div id="content" class="content">
+		<h1 id="homePageTitle">Vealize</h1>
+		<p>Visualize Code Execution</p>
+		<p id="stuff">Visualize line-to-line code execution for several languages</p>
+		<button onclick="location.href = '#main'">Get Started</button>
+	</div>
+	<div id="main" class="main">
+		<div class="mainTitle">
+			<h1>Code Execution Visualizer</h1>
+		</div>
+		<div class="mainCode" id="mainCode">
+			<label for="langs" id="langLabel">Choose a Language: </label>
+			<select name="langs" id="langs" class="langs">
+				<option value="python">Python</option>
+				<option value="javascript">Javascript</option>
+				<option value="c">C</option>
+				<option value="c++">C++</option>
+			</select>
+			<textarea wrap="off" id="editor" placeholder="Default: Hello World"></textarea>
+			<button onclick="code();">Submit</button>
+			<iframe id="codeEx" class="codeEx" width="900" height="300" style="margin-top: 100px" frameborder="0"></iframe>
+		</div>
+	</div>
+	<script type="text/javascript">
+	var cat = $('.header').offset().top;
+
+	$(window).scroll(function() {                  
+	var cs = $(window).scrollTop(); 
+	if (cs > cat) {           
+	    $('.header').css({                      
+	        position: 'fixed',
+	        top: '0',
+	        left: '0',
+	        width: '100%',
+	        background: 'white'
+	    });
+	    $('.header').css("padding-top", "5px");
+	    $('.header').css("color", "black");
+	    $('.header').css("border-bottom", "1px solid #696969");
+	    $('.h').css("color", "black");
+	    $('.h.active').css("color", "#ff0158");
+	} else {                                   
+	    $('.header').css({                     
+	        position: 'relative',
+	        width: 'auto'
+	    });
+	    $('.header').css('background', '#03030e')
+	    $('.header').css("padding-top", "30px");
+	    $('.header').css("color", "white");
+	    $('.header').css("border-bottom", "none");
+	    $('.h').css("color", "white");
+	    $('.h.active').css("color", "#ff0158");
+	}
+})
+	$("#editor").on('keyup', function (e) {
+		if (e.key === "Tab" || e.keyCode === 9)
+		{
+			e.preventDefault();
+        	e.stopPropagation()
+			var a = document.getElementById("editor")
+			a.innerText = a.innerText + "    "
+		}
+	});
+	</script>
+</body>
+<script type="text/javascript">
+	function code(){
+		var lang = document.getElementById("langs").value.trim()
+		var value = document.getElementById("editor").value
+		if (value == ""){
+			if (lang == "python"){
+				value = "print('Hello World')"
+			}else if (lang == "javascript")
+			{
+				value = "console.log('Hello World')"
+			}else if (lang == "c")
+			{
+				value = `#include <stdio.h>
+int main() {
+   printf("Hello, World!");
+   return 0;
+}`
+			}else if (lang == "c++")
+			{
+				value = `#include <iostream>
+int main() {
+    std::cout << "Hello World!";
+    return 0;
+}`
+			}
+		}
+		value = value.split("\n")
+		value = value.join("<br>")
+		var dataForm = new FormData();
+		dataForm.append("code", value)
+		fetch(`https://vealizeapi.root.sx/code/${lang}`, {method: "post", body: dataForm})
+			.then(e => e.json())
+			.then(data => editFrame(data))
+	}
+
+
+	function editFrame(data){
+		var link = data.link
+		document.getElementById("codeEx").remove()
+		var main = document.getElementById("mainCode")
+		main.innerHTML += `<iframe id="codeEx" class="codeEx" width="900" height="300" style="margin-top: 100px" frameborder="0" src=${link}></iframe>`
+		console.log(link)
+		var c = document.getElementById('codeEx')
+		if (c.className.includes("active")){
+			return
+		}else{
+			c.className = c.className + " active"
+		}
+	}
+</script>
+</html>
