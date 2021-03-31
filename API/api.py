@@ -6,7 +6,7 @@ import dateutil.parser
 import wolframalpha
 import urllib.parse
 import json
-import waitress
+# import waitress
 
 client = wolframalpha.Client('appID')
 
