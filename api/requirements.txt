@@ -1,1 +1,6 @@
-1
+Flask
+flask-cors
+requests
+wolframalpha
+python-dateutil
+waitress
