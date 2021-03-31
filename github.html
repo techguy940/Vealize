@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Vealize | Visualise Everything at one place</title>
+	<link rel="stylesheet" type="text/css" href="css/github.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://kit.fontawesome.com/0b1453f29b.js" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+	<meta property="og:type" content="website">
+    <meta property="og:url" content="https://vealize.my.to/github.html">
+    <meta property="og:title" content="Vealize | Github Repository Visualizer">
+    <meta property="og:description" content="Visualize github repositories in a unique way.">
+    <meta property="og:image" content="img/pagegit.png">
+	<meta name="twitter:card" content="summary_large_image">
+	<link rel='icon' href='img/logo.png' type="image/png">
+	
+
+</head>
+<body>
+	<header class="header">
+		<h1>Vealize</h1>
+		<ul>
+			<li><a class="h active" id="homeNav" href="index.html#">Home</a></li>
+			<li><a class="h" id="aboutNav" href="index.html#choose">About</a></li>
+			<li><a class="h" id="featuresNav"href="index.html#features">Features</a></li>
+			<li><a class="h" id="contactNav" href="index.html#contact">Contact</a></li>
+		</ul>
+	</header>
+	<div id="content" class="content">
+		<h1 id="homePageTitle">Vealize</h1>
+		<p>Visualize Github Repos</p>
+		<p id="stuff">Visualize Github Repositories in a unique way!</p>
+		<button onclick="location.href = '#main'">Get Started</button>
+	</div>
+	<div id="main" class="main">
+		<div class="mainTitle">
+			<h1>Github Repo Visualizer</h1>
+		</div>
+		<div class="inputData">
+			<input type="text" id="username" placeholder="Username">
+			<input type="text" id="repo" placeholder="Repository">
+			<button onclick="githubViz()">Submit</button>
+		</div>
+		<div class="graphBtns">
+			<button class="graphBtn active" id="forkGraphBtn">Forks</button>
+			<button class="graphBtn" id="issuesGraphBtn">Issues</button>
+			<button class="graphBtn" id="languageGraphBtn">Languages</button>
+		</div>
+		<div class="mainContent">
+			<div class="meta">
+				<h1>Meta Data</h1>
+				<div class="metaBlock">
+					<svg class="octicon octicon-code UnderlineNav-octicon d-none d-sm-inline" height="16" viewBox="0 0 16 16" version="1.1" width="16" aria-hidden="true"><path fill-rule="evenodd" d="M4.72 3.22a.75.75 0 011.06 1.06L2.06 8l3.72 3.72a.75.75 0 11-1.06 1.06L.47 8.53a.75.75 0 010-1.06l4.25-4.25zm6.56 0a.75.75 0 10-1.06 1.06L13.94 8l-3.72 3.72a.75.75 0 101.06 1.06l4.25-4.25a.75.75 0 000-1.06l-4.25-4.25z"></path></svg>
+					<span id="urlSpan">URL: </span>
+				</div>
+				<div class="metaBlock">
+					<svg class="octicon octicon-repo color-text-secondary mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>
+					<span id="ownerSpan">Owner: </span>
+				</div>
+				<div class="metaBlock">
+					<svg class="octicon octicon-repo color-text-secondary mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>
+					<span id="nameSpan">Name: </span>
+				</div>
+				<div class="metaBlock">
+					<i class="far fa-clock"></i>
+					<span id="createdSpan">Created At: </span>
+				</div>
+				<div class="metaBlock">
+					<svg class="octicon octicon-git-branch text-gray" height="16" viewBox="0 0 16 16" version="1.1" width="16" aria-hidden="true"><path fill-rule="evenodd" d="M11.75 2.5a.75.75 0 100 1.5.75.75 0 000-1.5zm-2.25.75a2.25 2.25 0 113 2.122V6A2.5 2.5 0 0110 8.5H6a1 1 0 00-1 1v1.128a2.251 2.251 0 11-1.5 0V5.372a2.25 2.25 0 111.5 0v1.836A2.492 2.492 0 016 7h4a1 1 0 001-1v-.628A2.25 2.25 0 019.5 3.25zM4.25 12a.75.75 0 100 1.5.75.75 0 000-1.5zM3.5 3.25a.75.75 0 111.5 0 .75.75 0 01-1.5 0z"></path></svg>
+					<span id="branchSpan">Default Branch: </span>
+				</div>
+				<div class="metaBlock">
+					<i class="fas fa-donate"></i>
+					<span id="contSpan">Contributors: </span>
+				</div>
+				<div class="metaBlock">
+					<svg class="octicon octicon-repo-forked" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"></path></svg>
+					<span id="forkCountSpan">Forks: </span>
+				</div>
+				<div class="metaBlock">
+					<svg class="octicon octicon-repo-forked" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"></path></svg>
+					<span id="forkSpan">Forked: </span>
+				</div>
+				<div class="metaBlock">
+					<svg class="octicon octicon-issue-opened UnderlineNav-octicon d-none d-sm-inline" height="16" viewBox="0 0 16 16" version="1.1" width="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm9 3a1 1 0 11-2 0 1 1 0 012 0zm-.25-6.25a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0v-3.5z"></path></svg>
+					<span id="issueSpan">Issues: </span>
+				</div>
+				<div class="metaBlock">
+					<svg class="octicon octicon-star-fill mr-1" height="16" viewBox="0 0 16 16" version="1.1" width="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path></svg>
+					<span id="starSpan">Stars: </span>
+				</div>
+				
+			</div>
+			<div class="graphs">
+				<canvas id="chartjs-0" class="chartjs" width="200" height="100"></canvas>
+				<canvas id="chartjs-1" class="chartjs" width="662" height="331"></canvas>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+	var cat = $('.header').offset().top;
+
+	$(window).scroll(function() {                  
+	var cs = $(window).scrollTop(); 
+	if (cs > cat) {           
+	    $('.header').css({                      
+	        position: 'fixed',
+	        top: '0',
+	        left: '0',
+	        width: '100%',
+	        background: 'white'
+	    });
+	    $('.header').css("padding-top", "5px");
+	    $('.header').css("color", "black");
+	    $('.header').css("border-bottom", "1px solid #696969");
+	    $('.h').css("color", "black");
+	    $('.h.active').css("color", "#ff0158");
+	} else {                                   
+	    $('.header').css({                     
+	        position: 'relative',
+	        width: 'auto'
+	    });
+	    $('.header').css('background', '#03030e')
+	    $('.header').css("padding-top", "30px");
+	    $('.header').css("color", "white");
+	    $('.header').css("border-bottom", "none");
+	    $('.h').css("color", "white");
+	    $('.h.active').css("color", "#ff0158");
+	}
+})
+	var graphBtns = $('.graphBtn')
+	for (var i = 0; i<graphBtns.length; i++){
+		graphBtns[i].addEventListener("click", function(){
+			if (this.id == "forkGraphBtn"){
+				document.getElementById("issuesGraphBtn").className = document.getElementById("issuesGraphBtn").className.replace(" active", "")
+				document.getElementById("languageGraphBtn").className = document.getElementById("languageGraphBtn").className.replace(" active", "")
+				if (this.className.includes("active")){
+					return
+				}else{
+					this.classList.toggle("active")
+					
+				}
+				getGraph(this.id)
+
+			} else if (this.id == "issuesGraphBtn"){
+				document.getElementById("forkGraphBtn").className = document.getElementById("forkGraphBtn").className.replace(" active", "")
+				document.getElementById("languageGraphBtn").className = document.getElementById("languageGraphBtn").className.replace(" active", "")
+				if (this.className.includes("active")){
+					return
+				}else{
+					this.classList.toggle("active")
+				}
+				getGraph(this.id)
+
+			} else{
+				document.getElementById("forkGraphBtn").className = document.getElementById("forkGraphBtn").className.replace(" active", "")
+				document.getElementById("issuesGraphBtn").className = document.getElementById("issuesGraphBtn").className.replace(" active", "")
+				if (this.className.includes("active")){
+					return
+				}else{
+					this.classList.toggle("active")
+				}
+				getGraph(this.id)
+
+
+			}
+		})
+	}
+</script>
+</body>
+<script type="text/javascript">
+	function githubViz(){
+		var owner = document.getElementById("username").value.trim()
+		var repo = document.getElementById("repo").value.trim()
+		fetch(`https://vealizeapi.root.sx/github/${owner}/${repo}`)
+			.then(e => e.json())
+			.then(data => edit(data))
+	}
+
+	function edit(data){
+		var urlSpan = document.getElementById("urlSpan")
+		var ownerSpan = document.getElementById("ownerSpan")
+		var nameSpan = document.getElementById("nameSpan")
+		var createdSpan = document.getElementById("createdSpan")
+		var branchSpan = document.getElementById("branchSpan")
+		var contSpan = document.getElementById("contSpan")
+		var forkCountSpan = document.getElementById("forkCountSpan")
+		var forkSpan = document.getElementById("forkSpan")
+		var issueSpan = document.getElementById("issueSpan")
+		var starSpan = document.getElementById("starSpan")
+
+		urlSpan.innerHTML = "URL: " + `<a href=${data.url}>Link</a>`
+		ownerSpan.innerHTML = "Owner: " + data.owner.name
+		nameSpan.innerHTML = "Name: " + data.name
+		createdSpan.innerHTML = "Created At: " + data.createdAt
+		branchSpan.innerHTML = "Default Branch: " + data.defaultBranch
+		contSpan.innerHTML = "Contributors: " + data.contributorsCount
+		forkCountSpan.innerHTML = "Forks: " + data.forksCount
+		forkSpan.innerHTML = "Forked: " + data.isForked
+		issueSpan.innerHTML = "Issues: " + data.issuesCount
+		starSpan.innerHTML = "Stars: " + data.stargazers
+
+		getGraph($('.graphBtn.active')[0].id)
+	}
+
+	// function getGraphs(){
+	// 	var active = $('.graphBtn.active')
+	// 	active = active[0]
+	// 	if (active.innerText == "Forks"){
+	// 		$('#issuesGraphBtn').removeClass("active")
+	// 		$('#languageGraphBtn').removeClass("active")
+	// 		$('#forkGraphBtn').addClass("active")
+
+	// 	}else if (active.innerText == "Issues"){
+	// 		$('#forkGraphBtn').removeClass("active")
+	// 		$('#languageGraphBtn').removeClass("active")
+	// 		$('#issuesGraphBtn').addClass("active")
+
+	// 	}else
+	// 	{
+	// 		$('#forkGraphBtn').removeClass("active")
+	// 		$('#issuesGraphBtn').removeClass("active")
+	// 		$('#languageGraphBtn').addClass("active")
+
+	// 	}
+	// }
+
+	function getGraph(active){
+		var owner = document.getElementById("username").value.trim()
+		var repo = document.getElementById("repo").value.trim()
+		if (owner == "" || repo == ""){
+			return
+		}
+		fetch(`https://vealizeapi.root.sx/githubGraph/${owner}/${repo}`)
+			.then(e => e.json())
+			.then(data => setGraph(data, active))
+
+	}
+	function removeData(chart) {
+		try{
+		    chart.data.labels.pop();
+		    chart.data.datasets.forEach((dataset) => {
+		        dataset.data.pop();
+		    });
+		    chart.update();}
+		catch(err){console.log(err)}
+	}
+	function setGraph(data, active){
+		if (active == "forkGraphBtn"){
+			var d = Object.keys(data.forks)
+			var values = d.map(key => parseInt(data.forks[key]))
+			var label = "Forks"
+		}else if(active == "issuesGraphBtn"){
+			var d = Object.keys(data.issues)
+			var values = d.map(key => parseInt(data.issues[key]))
+			var label = "Issues"
+		}else {
+			var d = Object.keys(data.languages)
+			var values = d.map(key => parseInt(data.languages[key]))
+			var label = "Languages"
+		}
+		var datasets = [{"label": label, "data": values, "fill": false,"borderColor": "rgb(75, 192, 192)","lineTension": 0.1}]
+		var lineData = {"type":"line","data":{"labels":d,"datasets": datasets, "options": {}}}
+		var line = document.getElementById("chartjs-0")
+		var bar = document.getElementById("chartjs-1")
+		line.remove()
+		bar.remove()
+		$('.graphs').prepend('<canvas id="chartjs-0" class="chartjs" width="200" height="100"></canvas>')
+		$('.graphs').prepend('<canvas id="chartjs-1" class="chartjs" width="662" height="331"></canvas>')
+		var line = document.getElementById("chartjs-0")
+		var bar = document.getElementById("chartjs-1")
+		function random_rgba() {
+    		var o = Math.round, r = Math.random, s = 255;
+    		return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + "1" + ')';
+		}
+		var bgs = []
+		for (var i = 0; i < d.length; i++){
+			bgs.push(random_rgba())
+		}
+
+		datasets = [{"label": label, "data": values, "fill": false,"lineTension": 0.1, "backgroundColor":bgs}]
+		var barData = {"type": "bar","data":{"labels":d,"datasets": datasets, "options": {}}}
+		var pieData = {"type": "doughnut","data":{"labels":d,"datasets": datasets, "options": {}}}
+
+		// line.style.display = "block"
+		bar.style.display = "block"
+
+
+		// new Chart(line, lineData)
+		if (label != "Languages"){
+			line.style.display = "block"
+			new Chart(line, lineData)
+		}else{
+			new Chart(line, pieData)
+			line.style.display = "block"
+
+		}
+		new Chart(bar, barData)
+
+		var graphs = $(".graphs")[0]
+		if (graphs.className.includes("active")){
+			return
+		}else{
+			graphs.className = graphs.className + " active"
+		}
+
+	}
+</script>
+</html>

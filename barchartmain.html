@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Vealize | Visualise Everything at one place</title>
+	<link rel="stylesheet" type="text/css" href="css/barchartmain.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://kit.fontawesome.com/0b1453f29b.js" crossorigin="anonymous"></script>
+	<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+	<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+	<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+	<meta property="og:type" content="website">
+    <meta property="og:url" content="https://vealize.my.to/barchartmain.html">
+    <meta property="og:title" content="Vealize | GDP Growth">
+    <meta property="og:description" content="Visualize GDP Growth of several countries.">
+    <meta property="og:image" content="img/pagebar.png">
+	<meta name="twitter:card" content="summary_large_image">
+	<link rel='icon' href='img/logo.png' type="image/png">
+	
+</head>
+<body>
+	<header class="header">
+		<h1>Vealize</h1>
+		<ul>
+			<li><a class="h active" id="homeNav" href="index.html#">Home</a></li>
+			<li><a class="h" id="aboutNav" href="index.html#choose">About</a></li>
+			<li><a class="h" id="featuresNav"href="index.html#features">Features</a></li>
+			<li><a class="h" id="contactNav" href="index.html#contact">Contact</a></li>
+		</ul>
+	</header>
+	<div id="content" class="content">
+		<h1 id="homePageTitle">Vealize</h1>
+		<p>Visualize GDP Growth of Countries</p>
+		<p id="stuff">Visualize GDP Growth in a unique Bar Chart Race!</p>
+		<button onclick="location.href = '#main'">Get Started</button>
+	</div>
+	<div id="main" class="main">
+		<div class="mainTitle">
+			<h1>GDP Growth</h1>
+		</div>
+		<div id="chartdiv"></div>
+	</div>
+	<script type="text/javascript">
+	var cat = $('.header').offset().top;
+
+	$(window).scroll(function() {                  
+	var cs = $(window).scrollTop(); 
+	if (cs > cat) {           
+	    $('.header').css({                      
+	        position: 'fixed',
+	        top: '0',
+	        left: '0',
+	        width: '100%',
+	        background: 'white'
+	    });
+	    $('.header').css("padding-top", "5px");
+	    $('.header').css("color", "black");
+	    $('.header').css("border-bottom", "1px solid #696969");
+	    $('.h').css("color", "black");
+	    $('.h.active').css("color", "#ff0158");
+	} else {                                   
+	    $('.header').css({                     
+	        position: 'relative',
+	        width: 'auto'
+	    });
+	    $('.header').css('background', '#03030e')
+	    $('.header').css("padding-top", "30px");
+	    $('.header').css("color", "white");
+	    $('.header').css("border-bottom", "none");
+	    $('.h').css("color", "white");
+	    $('.h.active').css("color", "#ff0158");
+	}
+})
+	</script>
+</body>
+<script type="text/javascript">
+/**
+ * ---------------------------------------
+ * This demo was created using amCharts 4.
+ * 
+ * For more information visit:
+ * https://www.amcharts.com/
+ * 
+ * Documentation is available at:
+ * https://www.amcharts.com/docs/v4/
+ * ---------------------------------------
+ */
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+var chart = am4core.create("chartdiv", am4charts.XYChart);
+chart.padding(40, 40, 40, 40);
+
+chart.numberFormatter.bigNumberPrefixes = [
+  { "number": 1e+3, "suffix": "K" },
+  { "number": 1e+6, "suffix": "M" },
+  { "number": 1e+9, "suffix": "B" }
+];
+
+var label = chart.plotContainer.createChild(am4core.Label);
+label.x = am4core.percent(97);
+label.y = am4core.percent(95);
+label.horizontalCenter = "right";
+label.verticalCenter = "middle";
+label.dx = -15;
+label.fontSize = 50;
+
+var playButton = chart.plotContainer.createChild(am4core.PlayButton);
+playButton.x = am4core.percent(97);
+playButton.y = am4core.percent(95);
+playButton.dy = -2;
+playButton.verticalCenter = "middle";
+playButton.events.on("toggled", function(event) {
+  if (event.target.isActive) {
+    play();
+  }
+  else {
+    stop();
+  }
+})
+
+var stepDuration = 4000;
+
+var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+categoryAxis.renderer.grid.template.location = 0;
+categoryAxis.dataFields.category = "network";
+categoryAxis.renderer.minGridDistance = 1;
+categoryAxis.renderer.inversed = true;
+categoryAxis.renderer.grid.template.disabled = true;
+
+var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
+valueAxis.min = 0;
+valueAxis.rangeChangeEasing = am4core.ease.linear;
+valueAxis.rangeChangeDuration = stepDuration;
+valueAxis.extraMax = 0.1;
+
+var series = chart.series.push(new am4charts.ColumnSeries());
+series.dataFields.categoryY = "network";
+series.dataFields.valueX = "MAU";
+series.tooltipText = "{valueX.value}"
+series.columns.template.strokeOpacity = 0;
+series.columns.template.column.cornerRadiusBottomRight = 5;
+series.columns.template.column.cornerRadiusTopRight = 5;
+series.interpolationDuration = stepDuration;
+series.interpolationEasing = am4core.ease.linear;
+
+var labelBullet = series.bullets.push(new am4charts.LabelBullet())
+labelBullet.label.horizontalCenter = "right";
+labelBullet.label.text = "{values.valueX.workingValue.formatNumber('#.0as')}";
+labelBullet.label.textAlign = "end";
+labelBullet.label.dx = -10;
+
+chart.zoomOutButton.disabled = false;
+
+// as by default columns of the same series are of the same color, we add adapter which takes colors from chart.colors color set
+series.columns.template.adapter.add("fill", function(fill, target){
+  return chart.colors.getIndex(target.dataItem.index);
+});
+
+var year = 1990;
+label.text = year.toString();
+
+var interval;
+
+function play() {
+  interval = setInterval(function(){
+    nextYear();
+  }, stepDuration)
+  nextYear();
+}
+
+function stop() {
+  if (interval) {
+    clearInterval(interval);
+  }
+}
+
+function nextYear() {
+  year++
+
+  if (year > 2017) {
+    year = 1990;
+  }
+
+  var newData = allData[year];
+  var itemsWithNonZero = 0;
+  for (var i = 0; i < chart.data.length; i++) {
+    chart.data[i].MAU = newData[i].MAU;
+    if (chart.data[i].MAU > 0) {
+      itemsWithNonZero++;
+    }
+  }
+
+  if (year == 2017) {
+    series.interpolationDuration = stepDuration / 4;
+    valueAxis.rangeChangeDuration = stepDuration / 4;
+  }
+  else {
+    series.interpolationDuration = stepDuration;
+    valueAxis.rangeChangeDuration = stepDuration;
+  }
+
+  chart.invalidateRawData();
+  label.text = year.toString();
+
+  categoryAxis.zoom({ start: 0, end: itemsWithNonZero / categoryAxis.dataItems.length });
+}
+
+
+categoryAxis.sortBySeries = series;
+
+var allData = {"2002": [{"network": "Australia", "MAU": 36553}, {"network": "Austria", "MAU": 39638}, {"network": "Bahamas", "MAU": 33505}, {"network": "Bahrain", "MAU": 43147}, {"network": "Belgium", "MAU": 37856}, {"network": "Bermuda", "MAU": 53096}, {"network": "Brunei", "MAU": 84125}, {"network": "Canada", "MAU": 38500}, {"network": "Denmark", "MAU": 42595}, {"network": "Euro area", "MAU": 34896}, {"network": "Finland", "MAU": 36218}, {"network": "France", "MAU": 35440}, {"network": "Germany", "MAU": 37262}, {"network": "High income", "MAU": 35675}, {"network": "Hong Kong", "MAU": 34366}, {"network": "Iceland", "MAU": 34794}, {"network": "Ireland", "MAU": 42289}, {"network": "Italy", "MAU": 37199}, {"network": "Japan", "MAU": 33888}, {"network": "Kuwait", "MAU": 69392}, {"network": "Luxembourg", "MAU": 85032}, {"network": "Macao", "MAU": 45126}, {"network": "Netherlands", "MAU": 42062}, {"network": "North America", "MAU": 45594}, {"network": "Norway", "MAU": 59482}, {"network": "OECD members", "MAU": 33339}, {"network": "Oman", "MAU": 44140}, {"network": "Post-demographic dividend", "MAU": 35434}, {"network": "Qatar", "MAU": 110654}, {"network": "San Marino", "MAU": 78148}, {"network": "Saudi Arabia", "MAU": 39194}, {"network": "Singapore", "MAU": 51478}, {"network": "Sweden", "MAU": 37980}, {"network": "Switzerland", "MAU": 50815}, {"network": "United Arab Emirates", "MAU": 95894}, {"network": "United Kingdom", "MAU": 34669}], "2003": [{"network": "Australia", "MAU": 37183}, {"network": "Austria", "MAU": 39816}, {"network": "Bahrain", "MAU": 43187}, {"network": "Belgium", "MAU": 37990}, {"network": "Bermuda", "MAU": 54549}, {"network": "Brunei", "MAU": 84970}, {"network": "Canada", "MAU": 38805}, {"network": "Denmark", "MAU": 42645}, {"network": "Euro area", "MAU": 34982}, {"network": "Finland", "MAU": 36852}, {"network": "France", "MAU": 35479}, {"network": "Germany", "MAU": 36977}, {"network": "High income", "MAU": 36306}, {"network": "Hong Kong", "MAU": 35486}, {"network": "Iceland", "MAU": 35369}, {"network": "Ireland", "MAU": 42903}, {"network": "Italy", "MAU": 37090}, {"network": "Japan", "MAU": 34333}, {"network": "Kuwait", "MAU": 80462}, {"network": "Luxembourg", "MAU": 85374}, {"network": "Macao", "MAU": 49153}, {"network": "Netherlands", "MAU": 41982}, {"network": "North America", "MAU": 46429}, {"network": "Norway", "MAU": 59678}, {"network": "OECD members", "MAU": 33790}, {"network": "Oman", "MAU": 42044}, {"network": "Post-demographic dividend", "MAU": 35983}, {"network": "Qatar", "MAU": 107615}, {"network": "San Marino", "MAU": 80118}, {"network": "Saudi Arabia", "MAU": 42344}, {"network": "Singapore", "MAU": 54560}, {"network": "Sweden", "MAU": 38742}, {"network": "Switzerland", "MAU": 50459}, {"network": "United Arab Emirates", "MAU": 97790}, {"network": "United Kingdom", "MAU": 35656}], "2004": [{"network": "Australia", "MAU": 38225}, {"network": "Austria", "MAU": 40652}, {"network": "Bahrain", "MAU": 43355}, {"network": "Belgium", "MAU": 39201}, {"network": "Bermuda", "MAU": 55452}, {"network": "Brunei", "MAU": 83942}, {"network": "Canada", "MAU": 39604}, {"network": "Denmark", "MAU": 43670}, {"network": "Euro area", "MAU": 35606}, {"network": "Finland", "MAU": 38188}, {"network": "France", "MAU": 36200}, {"network": "Germany", "MAU": 37418}, {"network": "High income", "MAU": 37352}, {"network": "Hong Kong", "MAU": 38274}, {"network": "Iceland", "MAU": 37890}, {"network": "Ireland", "MAU": 44940}, {"network": "Italy", "MAU": 37434}, {"network": "Japan", "MAU": 35078}, {"network": "Kuwait", "MAU": 87555}, {"network": "Luxembourg", "MAU": 87209}, {"network": "Macao", "MAU": 60810}, {"network": "Netherlands", "MAU": 42686}, {"network": "North America", "MAU": 47712}, {"network": "Norway", "MAU": 61675}, {"network": "OECD members", "MAU": 34672}, {"network": "Oman", "MAU": 41551}, {"network": "Post-demographic dividend", "MAU": 36958}, {"network": "Puerto Rico", "MAU": 36040}, {"network": "Qatar", "MAU": 116418}, {"network": "San Marino", "MAU": 82713}, {"network": "Saudi Arabia", "MAU": 44390}, {"network": "Singapore", "MAU": 59027}, {"network": "Sweden", "MAU": 40257}, {"network": "Switzerland", "MAU": 51505}, {"network": "United Arab Emirates", "MAU": 98076}, {"network": "United Kingdom", "MAU": 36292}], "2005": [{"network": "Australia", "MAU": 38928}, {"network": "Austria", "MAU": 41282}, {"network": "Bahrain", "MAU": 43201}, {"network": "Belgium", "MAU": 39802}, {"network": "Bermuda", "MAU": 56017}, {"network": "Brunei", "MAU": 82967}, {"network": "Canada", "MAU": 40471}, {"network": "Cyprus", "MAU": 33662}, {"network": "Denmark", "MAU": 44567}, {"network": "Euro area", "MAU": 36043}, {"network": "Finland", "MAU": 39115}, {"network": "France", "MAU": 36505}, {"network": "Germany", "MAU": 37703}, {"network": "High income", "MAU": 38205}, {"network": "Hong Kong", "MAU": 40922}, {"network": "Iceland", "MAU": 39679}, {"network": "Ireland", "MAU": 46613}, {"network": "Italy", "MAU": 37604}, {"network": "Japan", "MAU": 35658}, {"network": "Kuwait", "MAU": 93469}, {"network": "Luxembourg", "MAU": 88610}, {"network": "Macao", "MAU": 64199}, {"network": "Netherlands", "MAU": 43507}, {"network": "North America", "MAU": 48847}, {"network": "Norway", "MAU": 62864}, {"network": "OECD members", "MAU": 35407}, {"network": "Oman", "MAU": 41458}, {"network": "Post-demographic dividend", "MAU": 37770}, {"network": "Puerto Rico", "MAU": 35375}, {"network": "Qatar", "MAU": 109802}, {"network": "San Marino", "MAU": 83600}, {"network": "Saudi Arabia", "MAU": 45538}, {"network": "Singapore", "MAU": 61973}, {"network": "Sweden", "MAU": 41227}, {"network": "Switzerland", "MAU": 52770}, {"network": "United Arab Emirates", "MAU": 91798}, {"network": "United Kingdom", "MAU": 37159}], "2006": [{"network": "Australia", "MAU": 39445}, {"network": "Austria", "MAU": 42498}, {"network": "Bahrain", "MAU": 42673}, {"network": "Belgium", "MAU": 40532}, {"network": "Bermuda", "MAU": 58784}, {"network": "Brunei", "MAU": 85424}, {"network": "Canada", "MAU": 41203}, {"network": "Cyprus", "MAU": 34599}, {"network": "Denmark", "MAU": 46159}, {"network": "Euro area", "MAU": 37054}, {"network": "European Union", "MAU": 34026}, {"network": "Finland", "MAU": 40546}, {"network": "France", "MAU": 37113}, {"network": "Germany", "MAU": 39143}, {"network": "High income", "MAU": 39161}, {"network": "Hong Kong", "MAU": 43520}, {"network": "Iceland", "MAU": 40703}, {"network": "Ireland", "MAU": 47879}, {"network": "Italy", "MAU": 38243}, {"network": "Japan", "MAU": 36141}, {"network": "Kuwait", "MAU": 96244}, {"network": "Luxembourg", "MAU": 91724}, {"network": "Macao", "MAU": 71160}, {"network": "Netherlands", "MAU": 44965}, {"network": "North America", "MAU": 49676}, {"network": "Norway", "MAU": 63854}, {"network": "OECD members", "MAU": 36248}, {"network": "Oman", "MAU": 42472}, {"network": "Post-demographic dividend", "MAU": 38681}, {"network": "Puerto Rico", "MAU": 35024}, {"network": "Qatar", "MAU": 118585}, {"network": "San Marino", "MAU": 85726}, {"network": "Saudi Arabia", "MAU": 45527}, {"network": "Singapore", "MAU": 65386}, {"network": "Spain", "MAU": 33700}, {"network": "Sweden", "MAU": 42918}, {"network": "Switzerland", "MAU": 54531}, {"network": "United Arab Emirates", "MAU": 88086}, {"network": "United Kingdom", "MAU": 37793}], "2007": [{"network": "Australia", "MAU": 40680}, {"network": "Austria", "MAU": 43939}, {"network": "Bahrain", "MAU": 42755}, {"network": "Belgium", "MAU": 41623}, {"network": "Bermuda", "MAU": 60117}, {"network": "Brunei", "MAU": 84503}, {"network": "Canada", "MAU": 41647}, {"network": "Cyprus", "MAU": 35502}, {"network": "Denmark", "MAU": 46373}, {"network": "Equatorial Guinea", "MAU": 35570}, {"network": "Euro area", "MAU": 38009}, {"network": "Finland", "MAU": 42467}, {"network": "France", "MAU": 37755}, {"network": "Germany", "MAU": 40473}, {"network": "High income", "MAU": 39964}, {"network": "Hong Kong", "MAU": 45937}, {"network": "Iceland", "MAU": 43427}, {"network": "Ireland", "MAU": 48937}, {"network": "Italy", "MAU": 38612}, {"network": "Japan", "MAU": 36697}, {"network": "Kuwait", "MAU": 96870}, {"network": "Luxembourg", "MAU": 97864}, {"network": "Macao", "MAU": 79743}, {"network": "Netherlands", "MAU": 46527}, {"network": "North America", "MAU": 50091}, {"network": "Norway", "MAU": 65083}, {"network": "OECD members", "MAU": 36921}, {"network": "Oman", "MAU": 43034}, {"network": "Post-demographic dividend", "MAU": 39453}, {"network": "Qatar", "MAU": 118831}, {"network": "San Marino", "MAU": 90727}, {"network": "Saudi Arabia", "MAU": 45130}, {"network": "Singapore", "MAU": 68432}, {"network": "Sweden", "MAU": 44051}, {"network": "Switzerland", "MAU": 56269}, {"network": "United Arab Emirates", "MAU": 78830}, {"network": "United Kingdom", "MAU": 38384}], "2008": [{"network": "Australia", "MAU": 41331}, {"network": "Austria", "MAU": 44441}, {"network": "Bahrain", "MAU": 42218}, {"network": "Belgium", "MAU": 41619}, {"network": "Bermuda", "MAU": 60675}, {"network": "Brunei", "MAU": 81905}, {"network": "Canada", "MAU": 41611}, {"network": "Denmark", "MAU": 45865}, {"network": "Equatorial Guinea", "MAU": 40015}, {"network": "Euro area", "MAU": 37994}, {"network": "Finland", "MAU": 42574}, {"network": "France", "MAU": 37618}, {"network": "Germany", "MAU": 40989}, {"network": "High income", "MAU": 39873}, {"network": "Hong Kong", "MAU": 46635}, {"network": "Iceland", "MAU": 43334}, {"network": "Ireland", "MAU": 46062}, {"network": "Italy", "MAU": 37954}, {"network": "Japan", "MAU": 36278}, {"network": "Kuwait", "MAU": 93698}, {"network": "Luxembourg", "MAU": 94900}, {"network": "Macao", "MAU": 80762}, {"network": "Netherlands", "MAU": 47134}, {"network": "North America", "MAU": 49521}, {"network": "Norway", "MAU": 64586}, {"network": "OECD members", "MAU": 36738}, {"network": "Oman", "MAU": 44938}, {"network": "Post-demographic dividend", "MAU": 39307}, {"network": "Qatar", "MAU": 119723}, {"network": "San Marino", "MAU": 91087}, {"network": "Saudi Arabia", "MAU": 46678}, {"network": "Singapore", "MAU": 66046}, {"network": "Sweden", "MAU": 43466}, {"network": "Switzerland", "MAU": 56755}, {"network": "United Arab Emirates", "MAU": 71314}, {"network": "United Kingdom", "MAU": 37903}], "2009": [{"network": "Australia", "MAU": 41266}, {"network": "Austria", "MAU": 42656}, {"network": "Bahrain", "MAU": 40717}, {"network": "Belgium", "MAU": 40355}, {"network": "Bermuda", "MAU": 57151}, {"network": "Brunei", "MAU": 79512}, {"network": "Canada", "MAU": 39924}, {"network": "Denmark", "MAU": 43382}, {"network": "Equatorial Guinea", "MAU": 38738}, {"network": "Euro area", "MAU": 36135}, {"network": "Finland", "MAU": 38867}, {"network": "France", "MAU": 36324}, {"network": "Germany", "MAU": 38784}, {"network": "High income", "MAU": 38278}, {"network": "Hong Kong", "MAU": 45390}, {"network": "Iceland", "MAU": 40377}, {"network": "Ireland", "MAU": 43487}, {"network": "Kuwait", "MAU": 81922}, {"network": "Luxembourg", "MAU": 89098}, {"network": "Macao", "MAU": 80121}, {"network": "Netherlands", "MAU": 45125}, {"network": "North America", "MAU": 47706}, {"network": "Norway", "MAU": 62698}, {"network": "Oman", "MAU": 45635}, {"network": "Post-demographic dividend", "MAU": 37702}, {"network": "Qatar", "MAU": 117064}, {"network": "San Marino", "MAU": 78444}, {"network": "Saudi Arabia", "MAU": 44481}, {"network": "Singapore", "MAU": 63697}, {"network": "Sweden", "MAU": 40862}, {"network": "Switzerland", "MAU": 54805}, {"network": "United Arab Emirates", "MAU": 60769}, {"network": "United Kingdom", "MAU": 36042}], "2010": [{"network": "Australia", "MAU": 41464}, {"network": "Austria", "MAU": 43336}, {"network": "Bahrain", "MAU": 40570}, {"network": "Belgium", "MAU": 41085}, {"network": "Bermuda", "MAU": 56395}, {"network": "Brunei", "MAU": 80552}, {"network": "Canada", "MAU": 40699}, {"network": "Denmark", "MAU": 43998}, {"network": "Euro area", "MAU": 36786}, {"network": "Finland", "MAU": 39848}, {"network": "France", "MAU": 36855}, {"network": "Germany", "MAU": 40428}, {"network": "High income", "MAU": 39243}, {"network": "Hong Kong", "MAU": 48107}, {"network": "Iceland", "MAU": 38978}, {"network": "Ireland", "MAU": 44030}, {"network": "Kuwait", "MAU": 75204}, {"network": "Luxembourg", "MAU": 91743}, {"network": "Macao", "MAU": 98184}, {"network": "Netherlands", "MAU": 45524}, {"network": "North America", "MAU": 48516}, {"network": "Norway", "MAU": 62350}, {"network": "Oman", "MAU": 45335}, {"network": "Post-demographic dividend", "MAU": 38594}, {"network": "Qatar", "MAU": 125140}, {"network": "San Marino", "MAU": 73862}, {"network": "Saudi Arabia", "MAU": 45421}, {"network": "Singapore", "MAU": 72115}, {"network": "Sweden", "MAU": 42942}, {"network": "Switzerland", "MAU": 55866}, {"network": "United Arab Emirates", "MAU": 57232}], "2011": [{"network": "Australia", "MAU": 41894}, {"network": "Austria", "MAU": 44452}, {"network": "Bahrain", "MAU": 40164}, {"network": "Belgium", "MAU": 41248}, {"network": "Bermuda", "MAU": 54984}, {"network": "Brunei", "MAU": 82434}, {"network": "Canada", "MAU": 41565}, {"network": "Cayman Islands", "MAU": 49903}, {"network": "Denmark", "MAU": 44403}, {"network": "Euro area", "MAU": 37434}, {"network": "Finland", "MAU": 40683}, {"network": "France", "MAU": 37440}, {"network": "Germany", "MAU": 42692}, {"network": "High income", "MAU": 39921}, {"network": "Hong Kong", "MAU": 50085}, {"network": "Iceland", "MAU": 39621}, {"network": "Ireland", "MAU": 45147}, {"network": "Kuwait", "MAU": 77459}, {"network": "Luxembourg", "MAU": 92005}, {"network": "Macao", "MAU": 116752}, {"network": "Netherlands", "MAU": 46066}, {"network": "North America", "MAU": 48978}, {"network": "Norway", "MAU": 62145}, {"network": "Oman", "MAU": 42121}, {"network": "Post-demographic dividend", "MAU": 39128}, {"network": "Qatar", "MAU": 129349}, {"network": "San Marino", "MAU": 66053}, {"network": "Saudi Arabia", "MAU": 48524}, {"network": "Singapore", "MAU": 75113}, {"network": "Sweden", "MAU": 43755}, {"network": "Switzerland", "MAU": 56183}, {"network": "United Arab Emirates", "MAU": 58363}], "2012": [{"network": "Australia", "MAU": 42754}, {"network": "Austria", "MAU": 44551}, {"network": "Bahrain", "MAU": 40960}, {"network": "Belgium", "MAU": 41046}, {"network": "Bermuda", "MAU": 52137}, {"network": "Brunei", "MAU": 81993}, {"network": "Canada", "MAU": 41794}, {"network": "Denmark", "MAU": 44336}, {"network": "Finland", "MAU": 39912}, {"network": "Germany", "MAU": 42822}, {"network": "High income", "MAU": 40222}, {"network": "Hong Kong", "MAU": 50378}, {"network": "Iceland", "MAU": 39931}, {"network": "Ireland", "MAU": 44973}, {"network": "Kuwait", "MAU": 77618}, {"network": "Luxembourg", "MAU": 89505}, {"network": "Macao", "MAU": 124568}, {"network": "Netherlands", "MAU": 45411}, {"network": "North America", "MAU": 49651}, {"network": "Norway", "MAU": 63003}, {"network": "Oman", "MAU": 43030}, {"network": "Post-demographic dividend", "MAU": 39386}, {"network": "Qatar", "MAU": 125302}, {"network": "San Marino", "MAU": 60282}, {"network": "Saudi Arabia", "MAU": 49658}, {"network": "Singapore", "MAU": 76285}, {"network": "Sweden", "MAU": 43308}, {"network": "Switzerland", "MAU": 56149}, {"network": "United Arab Emirates", "MAU": 59419}], "2013": [{"network": "Australia", "MAU": 43118}, {"network": "Austria", "MAU": 44301}, {"network": "Bahrain", "MAU": 42680}, {"network": "Belgium", "MAU": 40928}, {"network": "Bermuda", "MAU": 50669}, {"network": "Brunei", "MAU": 79070}, {"network": "Canada", "MAU": 42339}, {"network": "Denmark", "MAU": 44564}, {"network": "Finland", "MAU": 39428}, {"network": "Germany", "MAU": 42914}, {"network": "High income", "MAU": 40567}, {"network": "Hong Kong", "MAU": 51732}, {"network": "Iceland", "MAU": 41259}, {"network": "Ireland", "MAU": 45470}, {"network": "Kuwait", "MAU": 74084}, {"network": "Luxembourg", "MAU": 90656}, {"network": "Macao", "MAU": 135318}, {"network": "Netherlands", "MAU": 45191}, {"network": "North America", "MAU": 50137}, {"network": "Norway", "MAU": 62896}, {"network": "Oman", "MAU": 41924}, {"network": "Post-demographic dividend", "MAU": 39710}, {"network": "Qatar", "MAU": 122636}, {"network": "San Marino", "MAU": 57750}, {"network": "Saudi Arabia", "MAU": 49537}, {"network": "Singapore", "MAU": 78896}, {"network": "Sweden", "MAU": 43475}, {"network": "Switzerland", "MAU": 56535}, {"network": "United Arab Emirates", "MAU": 61688}], "2014": [{"network": "Australia", "MAU": 43547}, {"network": "Austria", "MAU": 44320}, {"network": "Bahrain", "MAU": 43837}, {"network": "Belgium", "MAU": 41360}, {"network": "Brunei", "MAU": 76089}, {"network": "Canada", "MAU": 43079}, {"network": "Denmark", "MAU": 45057}, {"network": "Germany", "MAU": 43560}, {"network": "High income", "MAU": 41163}, {"network": "Hong Kong", "MAU": 52789}, {"network": "Iceland", "MAU": 41701}, {"network": "Ireland", "MAU": 48898}, {"network": "Kuwait", "MAU": 70832}, {"network": "Luxembourg", "MAU": 93655}, {"network": "Macao", "MAU": 130755}, {"network": "Netherlands", "MAU": 45668}, {"network": "North America", "MAU": 51034}, {"network": "Norway", "MAU": 63419}, {"network": "Oman", "MAU": 40365}, {"network": "Post-demographic dividend", "MAU": 40289}, {"network": "Qatar", "MAU": 120860}, {"network": "San Marino", "MAU": 56620}, {"network": "Saudi Arabia", "MAU": 49958}, {"network": "Singapore", "MAU": 80903}, {"network": "Sweden", "MAU": 44167}, {"network": "Switzerland", "MAU": 57218}, {"network": "United Arab Emirates", "MAU": 63943}], "2015": [{"network": "Australia", "MAU": 43923}, {"network": "Austria", "MAU": 44304}, {"network": "Bahrain", "MAU": 43926}, {"network": "Belgium", "MAU": 41708}, {"network": "Brunei", "MAU": 74600}, {"network": "Canada", "MAU": 43149}, {"network": "Denmark", "MAU": 45458}, {"network": "Euro area", "MAU": 37795}, {"network": "European Union", "MAU": 35737}, {"network": "Finland", "MAU": 38941}, {"network": "France", "MAU": 37766}, {"network": "Germany", "MAU": 43937}, {"network": "High income", "MAU": 41900}, {"network": "Hong Kong", "MAU": 53591}, {"network": "Iceland", "MAU": 43048}, {"network": "Ireland", "MAU": 60818}, {"network": "Japan", "MAU": 37882}, {"network": "Kuwait", "MAU": 68476}, {"network": "Luxembourg", "MAU": 94088}, {"network": "Macao", "MAU": 100444}, {"network": "Netherlands", "MAU": 46494}, {"network": "New Zealand", "MAU": 35309}, {"network": "North America", "MAU": 52016}, {"network": "Norway", "MAU": 64008}, {"network": "OECD members", "MAU": 38413}, {"network": "Oman", "MAU": 39873}, {"network": "Post-demographic dividend", "MAU": 40937}, {"network": "Puerto Rico", "MAU": 35291}, {"network": "Qatar", "MAU": 119749}, {"network": "San Marino", "MAU": 56372}, {"network": "Saudi Arabia", "MAU": 50723}, {"network": "Singapore", "MAU": 81741}, {"network": "Sweden", "MAU": 45679}, {"network": "Switzerland", "MAU": 57264}, {"network": "United Arab Emirates", "MAU": 66569}, {"network": "United Kingdom", "MAU": 38839}], "2016": [{"network": "Australia", "MAU": 44493}, {"network": "Austria", "MAU": 44464}, {"network": "Bahrain", "MAU": 43642}, {"network": "Belgium", "MAU": 42083}, {"network": "Brunei", "MAU": 71788}, {"network": "Canada", "MAU": 43238}, {"network": "Denmark", "MAU": 45991}, {"network": "Euro area", "MAU": 38359}, {"network": "European Union", "MAU": 36357}, {"network": "Finland", "MAU": 39659}, {"network": "France", "MAU": 38062}, {"network": "Germany", "MAU": 44431}, {"network": "High income", "MAU": 42350}, {"network": "Hong Kong", "MAU": 54412}, {"network": "Iceland", "MAU": 45630}, {"network": "Ireland", "MAU": 63227}, {"network": "Japan", "MAU": 38282}, {"network": "Kuwait", "MAU": 68861}, {"network": "Luxembourg", "MAU": 94920}, {"network": "Macao", "MAU": 97751}, {"network": "Malta", "MAU": 35058}, {"network": "Netherlands", "MAU": 47269}, {"network": "New Zealand", "MAU": 35776}, {"network": "North America", "MAU": 52375}, {"network": "Norway", "MAU": 64159}, {"network": "OECD members", "MAU": 38858}, {"network": "Oman", "MAU": 39883}, {"network": "Post-demographic dividend", "MAU": 41422}, {"network": "Puerto Rico", "MAU": 35044}, {"network": "Qatar", "MAU": 118207}, {"network": "San Marino", "MAU": 56500}, {"network": "Saudi Arabia", "MAU": 50423}, {"network": "Singapore", "MAU": 82621}, {"network": "South Korea", "MAU": 35020}, {"network": "Sweden", "MAU": 46568}, {"network": "Switzerland", "MAU": 57421}, {"network": "United Arab Emirates", "MAU": 67705}, {"network": "United Kingdom", "MAU": 39309}], "2017": [{"network": "Australia", "MAU": 44648}, {"network": "Austria", "MAU": 45436}, {"network": "Bahrain", "MAU": 43290}, {"network": "Belgium", "MAU": 42658}, {"network": "Brunei", "MAU": 71809}, {"network": "Canada", "MAU": 44017}, {"network": "Denmark", "MAU": 46682}, {"network": "Euro area", "MAU": 39175}, {"network": "European Union", "MAU": 37204}, {"network": "Finland", "MAU": 40585}, {"network": "France", "MAU": 38605}, {"network": "Germany", "MAU": 45229}, {"network": "High income", "MAU": 43053}, {"network": "Hong Kong", "MAU": 56054}, {"network": "Iceland", "MAU": 46482}, {"network": "Ireland", "MAU": 67335}, {"network": "Italy", "MAU": 35220}, {"network": "Japan", "MAU": 39002}, {"network": "Kuwait", "MAU": 65530}, {"network": "Luxembourg", "MAU": 94277}, {"network": "Macao", "MAU": 104861}, {"network": "Malta", "MAU": 36513}, {"network": "Netherlands", "MAU": 48472}, {"network": "New Zealand", "MAU": 36085}, {"network": "North America", "MAU": 53191}, {"network": "Norway", "MAU": 64800}, {"network": "OECD members", "MAU": 39585}, {"network": "Oman", "MAU": 37960}, {"network": "Post-demographic dividend", "MAU": 42189}, {"network": "Qatar", "MAU": 116935}, {"network": "San Marino", "MAU": 56861}, {"network": "Saudi Arabia", "MAU": 49045}, {"network": "Singapore", "MAU": 85535}, {"network": "South Korea", "MAU": 35938}, {"network": "Sweden", "MAU": 46949}, {"network": "Switzerland", "MAU": 57410}, {"network": "United Arab Emirates", "MAU": 67293}, {"network": "United Kingdom", "MAU": 39753}], "1990": [{"network": "Bahrain", "MAU": 35113}, {"network": "Bermuda", "MAU": 40553}, {"network": "Brunei", "MAU": 84672}, {"network": "Denmark", "MAU": 33785}, {"network": "Luxembourg", "MAU": 57618}, {"network": "Macao", "MAU": 40365}, {"network": "North America", "MAU": 36485}, {"network": "Norway", "MAU": 42813}, {"network": "Oman", "MAU": 35042}, {"network": "Saudi Arabia", "MAU": 42457}, {"network": "Singapore", "MAU": 34344}, {"network": "Switzerland", "MAU": 48181}, {"network": "United Arab Emirates", "MAU": 110432}], "1991": [{"network": "Bahrain", "MAU": 37996}, {"network": "Bermuda", "MAU": 39322}, {"network": "Brunei", "MAU": 84879}, {"network": "Denmark", "MAU": 34167}, {"network": "Luxembourg", "MAU": 61765}, {"network": "Macao", "MAU": 40680}, {"network": "North America", "MAU": 35910}, {"network": "Norway", "MAU": 43924}, {"network": "Oman", "MAU": 35568}, {"network": "Saudi Arabia", "MAU": 47262}, {"network": "Singapore", "MAU": 35613}, {"network": "Switzerland", "MAU": 47147}, {"network": "United Arab Emirates", "MAU": 105171}], "1992": [{"network": "Bahrain", "MAU": 39506}, {"network": "Bermuda", "MAU": 39584}, {"network": "Brunei", "MAU": 86423}, {"network": "Denmark", "MAU": 34721}, {"network": "Luxembourg", "MAU": 62059}, {"network": "Macao", "MAU": 44984}, {"network": "North America", "MAU": 36600}, {"network": "Norway", "MAU": 45232}, {"network": "Oman", "MAU": 36821}, {"network": "Saudi Arabia", "MAU": 47702}, {"network": "Singapore", "MAU": 37008}, {"network": "Switzerland", "MAU": 46610}, {"network": "United Arab Emirates", "MAU": 102615}], "1993": [{"network": "Australia", "MAU": 28815}, {"network": "Austria", "MAU": 32314}, {"network": "Bahrain", "MAU": 43499}, {"network": "Belgium", "MAU": 31018}, {"network": "Bermuda", "MAU": 40557}, {"network": "Brunei", "MAU": 84290}, {"network": "Canada", "MAU": 30578}, {"network": "Denmark", "MAU": 34609}, {"network": "Euro area", "MAU": 28720}, {"network": "France", "MAU": 29810}, {"network": "Germany", "MAU": 32492}, {"network": "High income", "MAU": 29433}, {"network": "Hong Kong", "MAU": 31097}, {"network": "Italy", "MAU": 31550}, {"network": "Japan", "MAU": 31476}, {"network": "Luxembourg", "MAU": 63804}, {"network": "Macao", "MAU": 46310}, {"network": "Netherlands", "MAU": 33103}, {"network": "North America", "MAU": 37118}, {"network": "Norway", "MAU": 46243}, {"network": "Oman", "MAU": 37372}, {"network": "Post-demographic dividend", "MAU": 28989}, {"network": "Saudi Arabia", "MAU": 45784}, {"network": "Singapore", "MAU": 40247}, {"network": "Sweden", "MAU": 29058}, {"network": "Switzerland", "MAU": 46129}, {"network": "United Arab Emirates", "MAU": 98224}], "1994": [{"network": "Australia", "MAU": 29646}, {"network": "Austria", "MAU": 32964}, {"network": "Bahrain", "MAU": 42334}, {"network": "Belgium", "MAU": 31920}, {"network": "Bermuda", "MAU": 40518}, {"network": "Brunei", "MAU": 84607}, {"network": "Canada", "MAU": 31646}, {"network": "Denmark", "MAU": 36332}, {"network": "Euro area", "MAU": 29343}, {"network": "France", "MAU": 30396}, {"network": "Germany", "MAU": 33175}, {"network": "High income", "MAU": 30201}, {"network": "Hong Kong", "MAU": 32239}, {"network": "Italy", "MAU": 32222}, {"network": "Japan", "MAU": 31680}, {"network": "Luxembourg", "MAU": 65346}, {"network": "Macao", "MAU": 47307}, {"network": "Netherlands", "MAU": 33879}, {"network": "North America", "MAU": 38170}, {"network": "Norway", "MAU": 48305}, {"network": "Oman", "MAU": 37441}, {"network": "Post-demographic dividend", "MAU": 29640}, {"network": "Saudi Arabia", "MAU": 44905}, {"network": "Singapore", "MAU": 43266}, {"network": "Sweden", "MAU": 30031}, {"network": "Switzerland", "MAU": 46344}, {"network": "United Arab Emirates", "MAU": 99529}], "1995": [{"network": "Australia", "MAU": 30412}, {"network": "Austria", "MAU": 33791}, {"network": "Bahrain", "MAU": 42896}, {"network": "Belgium", "MAU": 32613}, {"network": "Bermuda", "MAU": 41999}, {"network": "Brunei", "MAU": 86116}, {"network": "Canada", "MAU": 32226}, {"network": "Denmark", "MAU": 37237}, {"network": "France", "MAU": 30918}, {"network": "Germany", "MAU": 33653}, {"network": "High income", "MAU": 30802}, {"network": "Hong Kong", "MAU": 32358}, {"network": "Italy", "MAU": 33152}, {"network": "Japan", "MAU": 32425}, {"network": "Kuwait", "MAU": 81017}, {"network": "Luxembourg", "MAU": 65357}, {"network": "Macao", "MAU": 47887}, {"network": "Netherlands", "MAU": 34762}, {"network": "North America", "MAU": 38757}, {"network": "Norway", "MAU": 50051}, {"network": "Oman", "MAU": 38316}, {"network": "Post-demographic dividend", "MAU": 30260}, {"network": "Saudi Arabia", "MAU": 43980}, {"network": "Singapore", "MAU": 44921}, {"network": "Sweden", "MAU": 31076}, {"network": "Switzerland", "MAU": 46256}, {"network": "United Arab Emirates", "MAU": 100976}], "1996": [{"network": "Austria", "MAU": 34539}, {"network": "Bahrain", "MAU": 43504}, {"network": "Belgium", "MAU": 33068}, {"network": "Bermuda", "MAU": 42816}, {"network": "Brunei", "MAU": 86411}, {"network": "Canada", "MAU": 32394}, {"network": "Denmark", "MAU": 38101}, {"network": "Germany", "MAU": 33830}, {"network": "Hong Kong", "MAU": 32271}, {"network": "Italy", "MAU": 33569}, {"network": "Japan", "MAU": 33345}, {"network": "Kuwait", "MAU": 80453}, {"network": "Luxembourg", "MAU": 65369}, {"network": "Macao", "MAU": 46731}, {"network": "Netherlands", "MAU": 35837}, {"network": "North America", "MAU": 39697}, {"network": "Norway", "MAU": 52302}, {"network": "Oman", "MAU": 38911}, {"network": "Saudi Arabia", "MAU": 44207}, {"network": "Singapore", "MAU": 46380}, {"network": "Switzerland", "MAU": 46301}, {"network": "United Arab Emirates", "MAU": 101754}], "1997": [{"network": "Australia", "MAU": 32055}, {"network": "Austria", "MAU": 35222}, {"network": "Bahrain", "MAU": 43624}, {"network": "Belgium", "MAU": 34212}, {"network": "Bermuda", "MAU": 44514}, {"network": "Brunei", "MAU": 83138}, {"network": "Canada", "MAU": 33425}, {"network": "Denmark", "MAU": 39180}, {"network": "France", "MAU": 31853}, {"network": "Germany", "MAU": 34405}, {"network": "High income", "MAU": 32448}, {"network": "Hong Kong", "MAU": 33635}, {"network": "Italy", "MAU": 34167}, {"network": "Japan", "MAU": 33624}, {"network": "Kuwait", "MAU": 78426}, {"network": "Luxembourg", "MAU": 68240}, {"network": "Macao", "MAU": 45673}, {"network": "Netherlands", "MAU": 37186}, {"network": "North America", "MAU": 40981}, {"network": "Norway", "MAU": 54768}, {"network": "Oman", "MAU": 41019}, {"network": "Post-demographic dividend", "MAU": 31825}, {"network": "San Marino", "MAU": 65352}, {"network": "Saudi Arabia", "MAU": 43838}, {"network": "Singapore", "MAU": 48568}, {"network": "Sweden", "MAU": 32393}, {"network": "Switzerland", "MAU": 47271}, {"network": "United Arab Emirates", "MAU": 104829}], "1998": [{"network": "Australia", "MAU": 33174}, {"network": "Austria", "MAU": 36443}, {"network": "Bahamas", "MAU": 30362}, {"network": "Bahrain", "MAU": 44315}, {"network": "Belgium", "MAU": 34813}, {"network": "Bermuda", "MAU": 45911}, {"network": "Brunei", "MAU": 80813}, {"network": "Canada", "MAU": 34424}, {"network": "Denmark", "MAU": 39904}, {"network": "Euro area", "MAU": 32062}, {"network": "Finland", "MAU": 31760}, {"network": "France", "MAU": 32865}, {"network": "Germany", "MAU": 35081}, {"network": "High income", "MAU": 33131}, {"network": "Hong Kong", "MAU": 31394}, {"network": "Iceland", "MAU": 32144}, {"network": "Ireland", "MAU": 32854}, {"network": "Italy", "MAU": 34709}, {"network": "Japan", "MAU": 33154}, {"network": "Kuwait", "MAU": 75940}, {"network": "Luxembourg", "MAU": 71471}, {"network": "Macao", "MAU": 42705}, {"network": "Netherlands", "MAU": 38629}, {"network": "North America", "MAU": 42302}, {"network": "Norway", "MAU": 55872}, {"network": "OECD members", "MAU": 30941}, {"network": "Oman", "MAU": 42063}, {"network": "Post-demographic dividend", "MAU": 32510}, {"network": "San Marino", "MAU": 69499}, {"network": "Saudi Arabia", "MAU": 44251}, {"network": "Singapore", "MAU": 45901}, {"network": "Sweden", "MAU": 33743}, {"network": "Switzerland", "MAU": 48540}, {"network": "United Arab Emirates", "MAU": 100018}, {"network": "United Kingdom", "MAU": 31305}], "1999": [{"network": "Australia", "MAU": 34443}, {"network": "Austria", "MAU": 37666}, {"network": "Bahamas", "MAU": 32142}, {"network": "Bahrain", "MAU": 44562}, {"network": "Belgium", "MAU": 35971}, {"network": "Bermuda", "MAU": 47199}, {"network": "Brunei", "MAU": 81476}, {"network": "Canada", "MAU": 35903}, {"network": "Cyprus", "MAU": 28761}, {"network": "Denmark", "MAU": 40945}, {"network": "Euro area", "MAU": 32923}, {"network": "European Union", "MAU": 29234}, {"network": "Finland", "MAU": 33094}, {"network": "France", "MAU": 33810}, {"network": "Germany", "MAU": 35755}, {"network": "High income", "MAU": 33976}, {"network": "Hong Kong", "MAU": 31875}, {"network": "Iceland", "MAU": 32995}, {"network": "Ireland", "MAU": 35935}, {"network": "Italy", "MAU": 35244}, {"network": "Japan", "MAU": 33010}, {"network": "Kuwait", "MAU": 69981}, {"network": "Luxembourg", "MAU": 76492}, {"network": "Macao", "MAU": 40824}, {"network": "Netherlands", "MAU": 40312}, {"network": "New Zealand", "MAU": 27161}, {"network": "North America", "MAU": 43809}, {"network": "Norway", "MAU": 56608}, {"network": "OECD members", "MAU": 31738}, {"network": "Oman", "MAU": 41954}, {"network": "Post-demographic dividend", "MAU": 33466}, {"network": "Puerto Rico", "MAU": 30105}, {"network": "San Marino", "MAU": 74921}, {"network": "Saudi Arabia", "MAU": 41721}, {"network": "Singapore", "MAU": 48311}, {"network": "Spain", "MAU": 28589}, {"network": "Sweden", "MAU": 35245}, {"network": "Switzerland", "MAU": 49128}, {"network": "United Arab Emirates", "MAU": 97753}, {"network": "United Kingdom", "MAU": 32205}], "2000": [{"network": "Australia", "MAU": 35377}, {"network": "Austria", "MAU": 38844}, {"network": "Bahrain", "MAU": 44942}, {"network": "Belgium", "MAU": 37188}, {"network": "Bermuda", "MAU": 51140}, {"network": "Brunei", "MAU": 82049}, {"network": "Canada", "MAU": 37431}, {"network": "Denmark", "MAU": 42337}, {"network": "Euro area", "MAU": 34082}, {"network": "Finland", "MAU": 34887}, {"network": "France", "MAU": 34880}, {"network": "Germany", "MAU": 36764}, {"network": "High income", "MAU": 35153}, {"network": "Hong Kong", "MAU": 34016}, {"network": "Iceland", "MAU": 34044}, {"network": "Ireland", "MAU": 38849}, {"network": "Italy", "MAU": 36535}, {"network": "Japan", "MAU": 33871}, {"network": "Kuwait", "MAU": 69920}, {"network": "Luxembourg", "MAU": 81689}, {"network": "Macao", "MAU": 42225}, {"network": "Netherlands", "MAU": 41721}, {"network": "North America", "MAU": 45146}, {"network": "Norway", "MAU": 58045}, {"network": "Oman", "MAU": 43965}, {"network": "Post-demographic dividend", "MAU": 34646}, {"network": "Qatar", "MAU": 108323}, {"network": "San Marino", "MAU": 75678}, {"network": "Saudi Arabia", "MAU": 43071}, {"network": "Singapore", "MAU": 51706}, {"network": "Sweden", "MAU": 36854}, {"network": "Switzerland", "MAU": 50775}, {"network": "United Arab Emirates", "MAU": 102634}], "2001": [{"network": "Australia", "MAU": 35578}, {"network": "Austria", "MAU": 39186}, {"network": "Bahrain", "MAU": 43887}, {"network": "Belgium", "MAU": 37361}, {"network": "Bermuda", "MAU": 54245}, {"network": "Brunei", "MAU": 82596}, {"network": "Canada", "MAU": 37712}, {"network": "Denmark", "MAU": 42533}, {"network": "Euro area", "MAU": 34697}, {"network": "Finland", "MAU": 35706}, {"network": "France", "MAU": 35304}, {"network": "Germany", "MAU": 37325}, {"network": "High income", "MAU": 35398}, {"network": "Hong Kong", "MAU": 33956}, {"network": "Iceland", "MAU": 34914}, {"network": "Ireland", "MAU": 40455}, {"network": "Italy", "MAU": 37162}, {"network": "Japan", "MAU": 33927}, {"network": "Kuwait", "MAU": 68472}, {"network": "Luxembourg", "MAU": 82766}, {"network": "Macao", "MAU": 42443}, {"network": "Netherlands", "MAU": 42287}, {"network": "North America", "MAU": 45166}, {"network": "Norway", "MAU": 58956}, {"network": "Oman", "MAU": 45400}, {"network": "Post-demographic dividend", "MAU": 35024}, {"network": "Qatar", "MAU": 108055}, {"network": "San Marino", "MAU": 78890}, {"network": "Saudi Arabia", "MAU": 41472}, {"network": "Singapore", "MAU": 49851}, {"network": "Sweden", "MAU": 37330}, {"network": "Switzerland", "MAU": 51117}, {"network": "United Arab Emirates", "MAU": 98716}, {"network": "United Kingdom", "MAU": 33981}]}
+chart.data = JSON.parse(JSON.stringify(allData[year]));
+categoryAxis.zoom({ start: 0, end: 1 / chart.data.length });
+
+series.events.on("inited", function() {
+  setTimeout(function() {
+    playButton.isActive = false; // this starts interval
+  }, 2000)
+})
+
+</script>
+</html>
