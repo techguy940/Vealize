@@ -1,0 +1,327 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*
+{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Poppins', sans-serif;
+	scroll-behavior: smooth;
+}
+
+header
+{
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	flex-direction: row;
+	text-align: center;
+	padding-top: 30px;
+	padding-left: 40px;
+	background: rgb(3, 3, 14);
+	z-index: 10000;
+	color: #fff;
+	user-select: none;
+	transition: .4s ease-in-out;
+}
+
+header h1
+{
+	margin-right: 60px;
+	cursor: pointer;
+}
+
+header ul
+{
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+	flex-wrap: wrap;
+	text-align: center;
+}
+
+header ul li
+{
+	list-style: none;
+	margin-right: 30px;
+	cursor: pointer;
+}
+
+header ul li a
+{
+	text-decoration: none;
+	font-size: 18px;
+	color: #fff;
+}
+
+header ul li a:after {
+    transition: all ease-in-out .2s;
+    background: none repeat scroll 0 0 #ffffff;
+    content: "";
+    display: block;
+    height: 2px;
+    width: 0;
+    background: #ff0158;
+}
+
+header ul li a:hover:after {
+    width: 100%;
+}
+
+header ul li .h.active
+{
+	color: #ff0158;
+}
+
+header ul li .h.active:after
+{
+	height: 0px;
+}
+
+.content
+{
+	height: 90vh;
+	background: url(../img/bg.png);
+	background-repeat: no-repeat;
+	background-size: cover;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #fff;
+	flex-direction: column;
+}
+
+.content h1
+{
+	font-size: 4em;
+	position: relative;
+	bottom: 40px;
+	font-weight: 200;
+}
+
+.content p
+{
+	bottom: 40px;
+	position: relative;
+	font-size: 56px;
+	font-weight: 700;
+}
+
+.content #stuff
+{
+	font-size: 18px;
+	font-weight: 600;
+	color: #696969;
+	margin-top: 5px;
+
+}
+
+.content button
+{
+	background: #ff0158;
+	color: #fff;
+	outline: none;
+	border: none;
+	border-radius: 40px;
+	width: 180px;
+	height: 50px;
+	font-size: 18px;
+	font-weight: 600;
+	text-align: center;
+	cursor: pointer;
+}
+
+.content button:hover
+{
+	background: #c71653;
+	transition: .5s;
+	color: #f2f2f2;
+}
+
+.inputData
+{
+	margin-bottom: 30px;
+}
+
+.inputData input
+{
+	margin-bottom: 5px;
+	outline: none;
+	border: none;
+	background: rgb(245, 245, 245);
+	padding: 20px;
+	width: 300px;
+	height: 30px;
+	border-radius: 5px;
+	margin-right: 20px;
+}
+
+.inputData button
+{
+	margin-top: 20px;
+	width: 130px;
+	height: 40px;
+	background: #ff0158;
+	outline: none;
+	border: none;
+	border-radius: 40px;
+	color: #fff;
+	font-weight: 600;
+	text-align: center;
+	cursor: pointer;
+	font-size: 17px;
+}
+
+
+.inputData button:hover
+{
+	background: #c71653;
+	transition: .5s;
+	color: #f2f2f2;
+}
+
+.main
+{
+	margin-top: 60px;
+	height: 100vh;
+}
+
+.mainTitle
+{
+	text-align: center;
+}
+
+.mainTitle h1
+{
+	font-size: 3em;
+}
+
+.inputData
+{
+	margin-top: 30px;
+	margin-left: 30px;
+}
+
+
+.meta
+{
+	width: 300px;
+	height: 380px;
+	border-radius: 5px;
+	border: 2px solid #ff0158;
+	margin-top: 30px;
+	margin-left: 30px;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+}
+
+.meta h1
+{
+	font-size: 1.5em;
+}
+
+.metaBlock
+{
+	margin-top: 5px;
+}
+
+.metaBlock span
+{
+	margin-left: 5px;
+}
+
+.graphBtns
+{
+	display: flex;
+	flex-wrap: wrap;
+	margin-left: 355px;
+}
+
+.graphBtns .graphBtn
+{
+	width: 130px;
+	height: 40px;
+	background: #edeeef;
+	outline: none;
+	border: none;
+	border-radius: 20px;
+	color: #000;
+	font-weight: 600;
+	text-align: center;
+	cursor: pointer;
+	font-size: 15px;
+	margin-right: 30px;
+}
+
+
+.graphBtns .graphBtn:hover
+{
+	background: #e3e3e3;
+	transition: .5s;
+	color: #000;
+}
+
+.graphBtns .graphBtn.active
+{
+	background: #ff0158;
+	color: #fff;
+}
+
+.graphBtns .graphBtn.active:hover
+{
+	background: #c71653;
+	transition: .5s;
+	color: #f2f2f2;
+}
+
+.graphs
+{
+	display: none;
+}
+
+.graphs.active
+{
+	display: block;
+}
+
+.mainContent
+{
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.mainContent .graphs
+{
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.mainContent .chartjs
+{
+	max-width: 550px;
+	max-height: 300px;
+	position: relative;
+	margin-top: 60px;
+	margin-left: 20px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #ff0158; 
+  border-radius: 8px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #ff0158; 
+}
